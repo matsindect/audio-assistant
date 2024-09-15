@@ -9,5 +9,6 @@ const upload = multer({ dest: 'uploads/' });
 
 router.post('/proccess-audio',upload.single('audio'), uploadAndTrinscribe, answerQuestions);
 router.post('/document',upload.single('document'), uploadDocuments);
+router.post('/ask', answerQuestions);
 
 export default router;

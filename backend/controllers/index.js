@@ -45,33 +45,29 @@ export const answerQuestions = async (req, res) => {
   }
 
   try {
-    const embeddings = new OpenAIEmbeddings({
-      openAIApiKey: process.env.OPENAI_API_KEY, // Set your API key
-    });
-    // Ensure that Chroma is installed and running locally or connected remotely
-    const chromaClient = new Chroma({
-      collectionName: "documents", // You can name the collection as needed
-      embeddings, // The embedding model you are using (OpenAIEmbeddings)
-    });
-    const prompt = ChatPromptTemplate.fromTemplate(
-      `Answer the user's question: {input} based on the following context {context}`
-    );
-
+    // Initialize the OpenAI model
     const llm = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY });
-
-    // Step 5: Create a chain that combines documents (using LLM and prompt)
-    const combineDocsChain = await createStuffDocumentsChain({
-      llm,
-      prompt,
-    });
-    const retriever = chromaClient.asRetriever();
-    // Step 7: Create the retrieval chain for answering questions
-    const retrievalChain = await createRetrievalChain({
-      combineDocsChain,
-      retriever,
-    });
-
-    // Ask the question
+    // Define a prompt template
+    const prompt = ChatPromptTemplate.fromTemplate(
+        `Answer the user's question: {input} based on the following context {context}`
+      );
+  
+      // Create a chain to combine documents
+      const combineDocsChain = await createStuffDocumentsChain({
+        llm,
+        prompt,
+      });
+  
+      // Use the vector store's retriever method
+      const retriever = vectorStore.asRetriever();
+  
+      // Create a retrieval chain for document retrieval
+      const retrievalChain = await createRetrievalChain({
+        combineDocsChain,
+        retriever,
+      });
+  
+      // Get the response from the chain
     const response = await retrievalChain.call({ query: question });
     res.json({ answer: response.text });
   } catch (error) {
