@@ -20,3 +20,10 @@ Perfect for developers looking to explore voice recognition in web applications 
 - chande directory to backend folder un npm install, when all packages, create .env file and add port = 8082 and OPENAI_API_KEY are istalled run npm start
 - go to localhost:3000 on your browser and start using. 
 
+# Video Demo
+
+
+
+
+https://github.com/user-attachments/assets/966f352d-bb44-4508-8b81-29e4fac07280
+
