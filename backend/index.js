@@ -7,11 +7,20 @@ import helmet  from "helmet";
 import bodyParser  from "body-parser";
 import xss  from "xss-clean";
 import hpp  from "hpp";
+import cors from 'cors'
 const { port } = process.env;
 
 import './utils/appError.js';
 const server = express();
 import serverRouter  from './routes/index.js';
+
+const corsOptions = {
+    origin: '*', // Allows all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  };
+
+server.use(cors(corsOptions))
 // http security
 server.use(helmet());
 if (process.env.NNODE_ENV === "development") {

@@ -8,8 +8,10 @@ import UploadIcon from '@mui/icons-material/Upload';
 const AudioRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
+  const [assistanceResponse, setAassistanceResponse] = useState(null);
   const mediaRecorderRef = useRef(null);
   const audioChunks = useRef([]);
+  const [response, setResponse] = useState("");
 
   const startRecording = async () => {
     try {
@@ -45,12 +47,14 @@ const AudioRecorder = () => {
     formData.append('audio', audioBlob, 'recording.wav');
 
     try {
-      const response = await axios.post('http://localhost:5000/upload', formData, {
+      const response = await axios.post('http://localhost:8082/api/v1/proccess-audio', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log('Audio uploaded successfully:', response.data);
+      setResponse(response.data?.question)
+      setAassistanceResponse(response.data?.answer)
+      console.log('Audio uploaded successfully:', response.data?.answer);
     } catch (error) {
       console.error('Error uploading audio:', error);
     }
@@ -101,6 +105,18 @@ const AudioRecorder = () => {
               </Button>
             </Box>
           )}
+           <CardContent>
+           <Box sx={{ bgcolor: 'grey.100', p: 2, borderRadius: 1 }}>
+                <Typography variant="subtitle1" gutterBottom>You said:</Typography>
+                <Typography>{response || 'Waiting for input...'}</Typography>
+              </Box>
+          <Box sx={{ bgcolor: "primary.light", p: 2, borderRadius: 1 }}>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Assistant response:
+                  </Typography>
+                  <Typography>{assistanceResponse || "Waiting for input..."}</Typography>
+                </Box>
+          </CardContent>
         </CardContent>
   );
 };

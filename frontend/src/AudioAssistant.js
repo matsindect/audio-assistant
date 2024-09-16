@@ -15,6 +15,7 @@ import {
   FormControl,
   FormLabel,
 } from "@mui/material";
+import axios from 'axios';
 import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import AudioRecorder from "./components/AudioRecorder";
@@ -29,6 +30,7 @@ const AudioAssistant = () => {
   const [response, setResponse] = useState("");
   const [error, setError] = useState(null);
   const [mode, setMode] = useState("transcribe"); // Mode: 'transcribe' or 'audio'
+  const [assistanceResponse, setAassistanceResponse] = useState(null);
 
   const recognitionRef = useRef(null);
 
@@ -84,10 +86,21 @@ const AudioAssistant = () => {
     setIsListening(!isListening);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     setResponse(`You said: ${editableTranscript}`);
     setIsListening(false);
     recognitionRef.current.stop();
+    try {
+      const response = await axios.post('http://localhost:8082/api/v1/ask', {question:editableTranscript}, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      setAassistanceResponse(response.data?.answer)
+      console.log('Audio uploaded successfully:', response);
+    } catch (error) {
+      console.error('Error uploading audio:', error);
+    }
   };
 
   const handleTranscriptChange = (event) => {
@@ -166,20 +179,20 @@ const AudioAssistant = () => {
                 >
                   Submit
                 </Button>
-                
+               
+                  <Box sx={{ bgcolor: "primary.light", p: 2, borderRadius: 1 }}>
+                    <Typography variant="subtitle1" gutterBottom>
+                      Assistant response:
+                    </Typography>
+                    <Typography>{assistanceResponse || "Waiting for input..."}</Typography>
+                  </Box>
+          
               </Box>
             </CardContent>
           ) : (
             <AudioRecorder />
           )}
-          <CardContent>
-          <Box sx={{ bgcolor: "primary.light", p: 2, borderRadius: 1 }}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Assistant response:
-                  </Typography>
-                  <Typography>{response || "Waiting for input..."}</Typography>
-                </Box>
-          </CardContent>
+         
         </Card>
       </Box>
     </ThemeProvider>
