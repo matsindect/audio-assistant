@@ -29,5 +29,6 @@ Perfect for developers looking to explore voice recognition in web applications 
 
 
 
-https://github.com/user-attachments/assets/966f352d-bb44-4508-8b81-29e4fac07280
+
+https://github.com/user-attachments/assets/97bc8e75-69a0-4c9f-bb4c-5c446d71c323
 
