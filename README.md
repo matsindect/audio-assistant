@@ -12,6 +12,8 @@ A modern, responsive web application that brings voice interaction to your brows
 - Nodejs with express
 - OpenAI and langchain
 
+OpenAI offers high-performance NLP and conversational capabilities.LangChain extends these capabilities, making it easier to integrate with external data and build more complex workflows, which allows for more accurate, contextually relevant, and intelligent applications.
+
 Perfect for developers looking to explore voice recognition in web applications or as a starting point for more complex audio-based projects.
 
 # Install instructions
@@ -19,7 +21,7 @@ Perfect for developers looking to explore voice recognition in web applications 
 - open project on the terminal, chnage directory to the frontend folder and run npm install, when all packages are istalled run npm start
 - chande directory to backend folder un npm install, when all packages, create .env file and add port = 8082 and OPENAI_API_KEY are istalled run npm start
 - go to localhost:3000 on your browser and start using.
-- upload file from the backend using postman POST - http://localhost:8080/api/v1/document
+- upload a pdf document and start asking questions about the documents
 - start asking questions as shown in the demo below
 
 # Video Demo
