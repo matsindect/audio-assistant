@@ -3,7 +3,6 @@ import { OpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { createRetrievalChain } from "langchain/chains/retrieval";
-import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import fs from "fs";
@@ -18,6 +17,17 @@ const openai = new OpenAIApi({
   apiKey: process.env.OPENAI_API_KEY, // This is the default and can be omitted
 });
 
+/**
+ * An array of supported audio formats.
+ * 
+ * @constant {string[]}
+ * @default
+ * @example
+ * // Example usage:
+ * if (supportedFormats.includes(fileExtension)) {
+ *   console.log("Format is supported.");
+ * }
+ */
 const supportedFormats = [
   "flac",
   "m4a",
@@ -31,6 +41,24 @@ const supportedFormats = [
   "webm",
 ];
 
+/**
+ * Handles the upload and transcription of an audio file.
+ * 
+ * This function processes an uploaded audio file, checks if the file format is supported,
+ * sends the file to OpenAI Whisper for transcription, and attaches the transcription text
+ * to the request body. If the file format is unsupported or an error occurs during processing,
+ * appropriate error responses are sent.
+ * 
+ * @param {Object} req - The request object.
+ * @param {Object} req.file - The uploaded file object.
+ * @param {string} req.file.path - The path to the uploaded file.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * 
+ * @returns {void}
+ * 
+ * @throws {Error} If an error occurs during transcription.
+ */
 export const uploadAndTrinscribe = async (req, res, next) => {
   const audioFilePath = req.file.path;
 
@@ -68,6 +96,17 @@ export const uploadAndTrinscribe = async (req, res, next) => {
   }
 };
 
+/**
+ * Handles answering questions based on uploaded documents.
+ *
+ * @async
+ * @function answerQuestions
+ * @param {Object} req - The request object.
+ * @param {Object} req.body - The body of the request.
+ * @param {string} req.body.question - The question to be answered.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} Sends a JSON response with the answer or an error message.
+ */
 export const answerQuestions = async (req, res) => {
   const { question } = req.body;
 
@@ -106,6 +145,19 @@ export const answerQuestions = async (req, res) => {
   }
 };
 
+/**
+ * Uploads a document, processes its content, and stores it in a memory vector store.
+ *
+ * @async
+ * @function uploadDocuments
+ * @param {Object} req - The request object.
+ * @param {Object} req.file - The uploaded file object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the document is processed and stored.
+ * @throws {Error} - Throws an error if the document processing fails.
+ *
+ * uploadDocuments(req, res);
+ */
 export const uploadDocuments = async (req, res) => {
   try {
     if (!req.file) {
